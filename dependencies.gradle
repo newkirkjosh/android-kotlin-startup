@@ -1,0 +1,154 @@
+allprojects {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://maven.google.com" }
+
+        jcenter()
+        mavenCentral()
+        google()
+
+        flatDir {
+            dirs 'aars'
+        }
+
+        maven { url "https://jitpack.io" }
+    }
+
+    afterEvaluate {
+        tasks.withType(JavaCompile.class) {
+            options.compilerArgs << "-Xmaxerrs" << "500"
+        }
+    }
+}
+
+ext {
+
+    // Android
+    androidMinSdkVersion        = 19
+    androidTargetSdkVersion     = 27
+    androidCompileSdkVersion    = 27
+
+    androidBuildToolsVersion    = '26.0.2'
+    playServicesVersion         = '11.6.2'
+    supportLibraryVersion       = '27.0.2'
+
+    // Kotlin Version
+    kotlin_version              = '1.2.21'
+
+    // Libraries
+    androidKtxVersion               = '0.1'
+    anrWatchdogVersion              = '1.3.0'
+    apacheCommonsCollectionVersion  = '4.1'
+    apacheCommonsLangVersion        = '3.6'
+    branchVersion                   = '2.12.1'
+    calligraphyVersion              = '2.3.0'
+    circleImageViewVersion          = '3.0.2'
+    daggerVersion                   = '2.12'
+    dataBindingCompilerVersion      = '3.0.1'
+    easyPermissionsVersion          = '1.0.1'
+    fabricVersion                   = '2.8.0@aar'
+    facebookVersion                 = '4.27.0'
+    gestureRecyclerVersion          = '1.4.0'
+    googleAnalyticsVersion          = '+'
+    guavaVersion                    = '23.1-android'
+    jacksonVersion                  = '2.9.1'
+    javaxAnnotationsVersion         = '10.0-b28'
+    javaxInject                     = ''
+    leakcanaryVersion               = '1.5.4'
+    markwonVersion                  = '1.0.3'
+    materialProgressBarVersion      = '1.4.2'
+    mixpanelVersion                 = '5.2.1'
+    multidexVersion                 = '1.0.1'
+    okhttpDownloaderVersion         = '1.1.0'
+    okhttpVersion                   = '3.9.1'
+    parclerVersion                  = '1.1.9'
+    phoneNumberVersion              = '8.8.5'
+    picassoVersion                  = '2.5.2'
+    recyclerAnimatorVersion         = '2.2.6'
+    retrofitVersion                 = '2.3.0'
+    supportConstraintVersion        = '1.1.0-beta5'
+    timberVersion                   = '4.6.0'
+
+    // Testing
+    androidCoreTestingVersion       = '1.0.0'
+
+    // Android Support Library
+    androidSupportDependencies = [
+            annotations:        "com.android.support:support-annotations:${supportLibraryVersion}",
+            appCompatV7:        "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            cardview:           "com.android.support:cardview-v7:${supportLibraryVersion}",
+            constraintLayout:   "com.android.support.constraint:constraint-layout:${supportConstraintVersion}",
+            customTabs:         "com.android.support:customtabs:${supportLibraryVersion}",
+            design:             "com.android.support:design:${supportLibraryVersion}",
+            gridLayoutV7:       "com.android.support:gridlayout-v7:${supportLibraryVersion}",
+            preferenceV7:       "com.android.support:preference-v7:${supportLibraryVersion}",
+            palette:            "com.android.support:palette-v7:${supportLibraryVersion}",
+            recyclerViewV7:     "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            supportV4:          "com.android.support:support-v4:${supportLibraryVersion}",
+            supportV13:         "com.android.support:support-v13:${supportLibraryVersion}"
+    ]
+
+    // Android Architecture Components
+    androidArchDependencies = [
+            extensions:         "android.arch.lifecycle:extensions:1.0.0",
+            lifecycle:          "android.arch.lifecycle:compiler:1.0.0",
+            reactiveStreams:    "android.arch.lifecycle:reactivestreams:1.0.0",
+            runtime:            "android.arch.paging:runtime:1.0.0-alpha4-1"
+    ]
+
+    // Play Services Components
+    playServicesDependencies = [
+            ads:            "com.google.android.gms:play-services-ads:${playServicesVersion}",
+            analytics:      "com.google.android.gms:play-services-analytics:${playServicesVersion}",
+            gcm:            "com.google.android.gms:play-services-gcm:${playServicesVersion}",
+            location:       "com.google.android.gms:play-services-location:${playServicesVersion}"
+    ]
+
+    libDependencies = [
+            androidKtx:                 "androidx.core:core-ktx:${androidKtxVersion}",
+            anrWatchdog:                "com.github.anrwatchdog:anrwatchdog:${anrWatchdogVersion}",
+            apacheCommonsCollection:    "org.apache.commons:commons-collections4:${apacheCommonsCollectionVersion}",
+            apacheCommonsLang:          "org.apache.commons:commons-lang3:${apacheCommonsLangVersion}",
+            branch:                     "io.branch.sdk.android:library:${branchVersion}",
+            calligraphy:                "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
+            circleImageView:            "com.mikhaellopez:circularimageview:${circleImageViewVersion}",
+            dagger:                     "com.google.dagger:dagger:${daggerVersion}",
+            daggerCompiler:             "com.google.dagger:dagger-compiler:${daggerVersion}",
+            daggerSupport:              "com.google.dagger:dagger-android-support:${daggerVersion}",
+            daggerProcessor:            "com.google.dagger:dagger-android-processor:${daggerVersion}",
+            dataBindingCompiler:        "com.android.databinding:compiler:${dataBindingCompilerVersion}",
+            easyPermissions:            "pub.devrel:easypermissions:${easyPermissionsVersion}",
+            fabric:                     "com.crashlytics.sdk.android:crashlytics:${fabricVersion}",
+            facebook:                   "com.facebook.android:facebook-android-sdk:${facebookVersion}",
+            gestureRecycler:            "com.thesurix.gesturerecycler:gesture-recycler:${gestureRecyclerVersion}",
+            guava:                      "com.google.guava:guava:${guavaVersion}",
+            jacksonCore:                "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}",
+            jacksonAnnotations:         "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
+            jacksonDatabind:            "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+            javaXAnnotations:           "org.glassfish:javax.annotation:${javaxAnnotationsVersion}",
+            javaXAnnotationsJsr250:     "javax.annotation:jsr250-api:${javaxAnnotationsVersion}",
+            kotlinJRE8:                 "org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlin_version}",
+            leakCanary:                 "com.squareup.leakcanary:leakcanary-android-no-op:${leakcanaryVersion}",
+            leakCanaryDebug:            "com.squareup.leakcanary:leakcanary-android:${leakcanaryVersion}",
+            materialProgressBar:        "me.zhanghai.android.materialprogressbar:library:${materialProgressBarVersion}",
+            multidex:                   "com.android.support:multidex:${multidexVersion}",
+            okhttp:                     "com.squareup.okhttp3:okhttp:${okhttpVersion}",
+            okhttpLoggingInterceptor:   "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}",
+            parceler:                   "org.parceler:parceler-api:${parclerVersion}",
+            parcelerAnnotations:        "org.parceler:parceler:${parclerVersion}",
+            phoneNumber:                "io.michaelrocks:libphonenumber-android:${phoneNumberVersion}",
+            picasso:                    "com.squareup.picasso:picasso:${picassoVersion}",
+            picassoDownloader:          "com.jakewharton.picasso:picasso2-okhttp3-downloader:${okhttpDownloaderVersion}",
+            recyclerAnimator:           "jp.wasabeef:recyclerview-animators:${recyclerAnimatorVersion}",
+            retrofit:                   "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitJackson:            "com.squareup.retrofit2:converter-jackson:${retrofitVersion}",
+            supportConstraint:          "com.android.support.constraint:constraint-layout:${supportConstraintVersion}",
+            svgAndroid:                 "com.github.tinsukE:svg-android:${svgAndroidVersion}",
+            timber:                     "com.jakewharton.timber:timber:${timberVersion}",
+    ]
+
+    testDependencies = [
+            androidCore:    "android.arch.core:core-testing:${androidCoreTestingVersion}"
+    ]
+}

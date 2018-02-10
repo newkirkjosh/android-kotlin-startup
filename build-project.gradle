@@ -1,0 +1,199 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
+
+android {
+    def globalConfig = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion globalConfig["androidCompileSdkVersion"]
+    buildToolsVersion globalConfig["androidBuildToolsVersion"]
+
+    defaultConfig {
+        applicationId "applicationId"
+        minSdkVersion globalConfig["androidMinSdkVersion"]
+        targetSdkVersion globalConfig["androidTargetSdkVersion"]
+
+        // Update per play store release version
+        versionCode 1
+
+        // Update main number for release updates and (#) for debug updates
+        versionName "0.0.1 (1)"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+        dataBinding.setEnabled(true)
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/Manifest.MF'
+    }
+
+    compileOptions {
+        incremental false // investigate if we can use this
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        preDexLibraries = false
+        dexInProcess = false
+        javaMaxHeapSize "4g"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-DEBUG"
+
+            // Disable Crashlytics timestamp build when in debug
+            ext.alwaysUpdateBuildId = false
+
+            if (project.hasProperty('devBuild')) {
+                aaptOptions.setCruncherEnabled(false)
+            }
+        }
+    }
+
+    testOptions {
+        reportDir "$rootDir/test-reports"
+        resultsDir "$rootDir/test-results"
+
+        unitTests {
+            returnDefaultValues true
+            all {
+                jvmArgs '-XX:MaxPermSize=256m'
+                if (it.name == 'testDebugUnitTest') {
+                    systemProperty 'debug', 'true'
+                }
+            }
+        }
+    }
+
+    signingConfigs {
+        release {
+            v2SigningEnabled false
+        }
+    }
+
+    sourceSets {
+        // Main
+        main.java.srcDirs += 'src/main/kotlin'
+
+        // Test
+        test.java.srcDirs += 'src/test/kotlin'
+
+        // Implementation Tests (Android)
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings false
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+}
+
+/*
+ Dependency versions are defined in the top level build-app.gradle file. This helps keeping track of
+ all versions in a single place. This improves readability and helps managing project complexity.
+ */
+dependencies {
+
+    // Jars
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def supportDependencies = rootProject.ext.androidSupportDependencies
+    def archDependencies = rootProject.ext.androidArchDependencies
+    def playServices = rootProject.ext.playServicesDependencies
+    def libDependencies = rootProject.ext.libDependencies
+    def testDependencies = rootProject.ext.testDependencies
+
+    // Support
+    implementation supportDependencies.annotations
+    implementation supportDependencies.appCompatV7
+    implementation supportDependencies.cardview
+    implementation supportDependencies.constraintLayout
+    implementation supportDependencies.customTabs
+    implementation supportDependencies.design
+    implementation supportDependencies.gridLayoutV7
+    implementation supportDependencies.preferenceV7
+    implementation supportDependencies.palette
+    implementation supportDependencies.recyclerViewV7
+    implementation supportDependencies.supportV4
+    implementation supportDependencies.supportV13
+
+    // Architecture Components
+    implementation archDependencies.extensions
+    kapt archDependencies.lifecycle
+    implementation archDependencies.reactiveStreams
+    implementation archDependencies.runtime
+
+    // Play Services
+    implementation playServices.ads
+    implementation playServices.analytics
+    implementation playServices.gcm
+    implementation playServices.location
+
+    // Third Party Libs
+    implementation libDependencies.anrWatchdog
+    implementation libDependencies.apacheCommonsCollection
+    implementation libDependencies.apacheCommonsLang
+    implementation libDependencies.branch
+    implementation libDependencies.calligraphy
+    implementation libDependencies.circleImageView
+    implementation libDependencies.dagger
+    kapt libDependencies.daggerCompiler
+    implementation libDependencies.daggerSupport
+    kapt libDependencies.daggerProcessor
+    kapt libDependencies.dataBindingCompiler
+    implementation libDependencies.easyPermissions
+    implementation(libDependencies.fabric) {
+        transitive = true
+    }
+    implementation(libDependencies.facebook) {
+        exclude group: 'com.android.support', module: 'multidex'
+    }
+    implementation libDependencies.gestureRecycler
+    implementation libDependencies.guava
+    implementation libDependencies.jacksonCore
+    implementation libDependencies.jacksonAnnotations
+    implementation libDependencies.jacksonDatabind
+    provided libDependencies.javaXAnnotations
+    implementation libDependencies.kotlinJRE8
+    releaseImplementation libDependencies.leakCanary
+    debugImplementation libDependencies.leakCanaryDebug
+    implementation libDependencies.materialProgressBar
+    implementation libDependencies.multidex
+    implementation libDependencies.okhttp
+    implementation libDependencies.okhttpLoggingInterceptor
+    implementation libDependencies.parceler
+    kapt libDependencies.parcelerAnnotations
+    implementation libDependencies.phoneNumber
+    implementation libDependencies.picasso
+    implementation libDependencies.picassoDownloader
+    implementation libDependencies.recyclerAnimator
+    implementation libDependencies.retrofit
+    implementation libDependencies.retrofitJackson
+    implementation libDependencies.retrofitRxAdapter
+    implementation libDependencies.supportConstraint
+    implementation libDependencies.timber
+
+    testImplementation testDependencies.androidCore
+}
